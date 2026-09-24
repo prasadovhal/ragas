@@ -265,13 +265,20 @@ def test_evaluation_result_full_coverage_is_silent():
 
 
 def test_evaluation_result_partial_coverage_warns_and_marks_repr():
+    import inspect
+
     import numpy as np
 
     from ragas.dataset_schema import EvaluationResult
 
     scores = [{"faithfulness": 1.0}, {"faithfulness": float("nan")}]
-    with pytest.warns(UserWarning, match="faithfulness: 1/2"):
+    with pytest.warns(UserWarning, match="faithfulness: 1/2") as caught:
+        constructor_line = inspect.currentframe().f_lineno + 1
         result = EvaluationResult(scores=scores, dataset=_make_dataset(2))
+
+    assert len(caught) == 1
+    assert caught[0].filename == __file__
+    assert caught[0].lineno == constructor_line
 
     # backward compat: nanmean semantics preserved
     assert result._repr_dict["faithfulness"] == 1.0

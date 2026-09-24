@@ -500,7 +500,7 @@ class EvaluationResult:
                     "`raise_exceptions=True` to evaluate() to surface underlying errors."
                 )
                 logger.warning(msg)
-                warnings.warn(msg, UserWarning, stacklevel=2)
+                warnings.warn(msg, UserWarning, stacklevel=3)
 
     def __repr__(self) -> str:
         parts = []
